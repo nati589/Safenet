@@ -5,7 +5,7 @@ import Loadable from 'components/Loadable';
 import Dashboard from 'layout/Dashboard';
 import ProtectedRoute from 'pages/authentication/ProtectedRoute';
 
-const Color = Loadable(lazy(() => import('pages/component-overview/color')));
+const Blacklist = Loadable(lazy(() => import('pages/component-overview/blacklist')));
 const History = Loadable(lazy(() => import('pages/component-overview/history')));
 const Shadow = Loadable(lazy(() => import('pages/component-overview/shadows')));
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/index')));
@@ -30,7 +30,7 @@ const MainRoutes = {
     },
     {
       path: 'blacklist',
-      element: <Color />
+      element: <Blacklist />
     },
     {
       path: 'dashboard',

@@ -16,7 +16,7 @@ import OrdersTable from './OrdersTable';
 
 // ===============================|| COMPONENT - COLOR ||=============================== //
 
-export default function ComponentColor() {
+export default function Blacklist() {
   // const [value, setValue] = useState(0);
   // function handleChange(event, newValue) {
   //   setValue(newValue);

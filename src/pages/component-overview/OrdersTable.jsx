@@ -130,16 +130,8 @@ export default function OrderTable() {
     getData('/flows')
       .then((response) => {
         response.map((flow) => {
-          // x.push({
-          //   _id: flow._id,
-          //   source_ip: flow.source_ip,
-          //   destination_ip: flow.destination_ip,
-          //   Attack_type: flow.Attack_type,
-          //   size: flow.timestamp.length
-          // });
           setRows((rows) => [...rows, createData(flow._id, flow.source_ip, flow.destination_ip, flow.Attack_type, flow.timestamp.length)]);
         });
-        // setRows(x);
       })
       .catch((error) => {
         console.log(error);

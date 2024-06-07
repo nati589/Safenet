@@ -86,7 +86,7 @@ export default function DashboardDefault() {
               <Typography variant="h6" color="text.secondary">
                 This Week Statistics
               </Typography>
-              <Typography variant="h3">1,645</Typography>
+              {/* <Typography variant="h3">1,645</Typography> */}
             </Stack>
           </Box>
           <MonthlyBarChart />

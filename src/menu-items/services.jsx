@@ -20,40 +20,33 @@ const icons = {
 
 // ==============================|| MENU ITEMS - UTILITIES ||============================== //
 
-const utilities = {
-  id: 'utilities',
+const services = {
+  id: 'services',
   title: 'Services',
   type: 'group',
   children: [
     {
-      id: 'util-typography',
+      id: 'history',
       title: 'History',
       type: 'item',
       url: '/history',
       icon: icons.FontSizeOutlined
     },
     {
-      id: 'util-color',
+      id: 'blacklist',
       title: 'Blacklist',
       type: 'item',
       url: '/blacklist',
       icon: icons.BgColorsOutlined
     },
     {
-      id: 'util-shadow',
+      id: 'profile',
       title: 'Profile',
       type: 'item',
       url: '/profile',
       icon: icons.AntDesignOutlined
     }
-    // {
-    //   id: 'util-shadow',
-    //   title: 'Shadow',
-    //   type: 'item',
-    //   url: '/shadow',
-    //   icon: icons.BarcodeOutlined
-    // }
   ]
 };
 
-export default utilities;
+export default services;
