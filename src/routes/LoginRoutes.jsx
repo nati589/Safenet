@@ -4,6 +4,7 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 import MinimalLayout from 'layout/MinimalLayout';
 import AuthLogout from 'pages/authentication/auth-forms/AuthLogout';
+import AuthResetPassword from 'pages/authentication/resetPassword';
 
 // render - login
 const AuthLogin = Loadable(lazy(() => import('pages/authentication/login')));
@@ -26,6 +27,10 @@ const LoginRoutes = {
     {
       path: '/logout',
       element: <AuthLogout />
+    }, 
+    {
+      path: '/reset-password',
+      element: <AuthResetPassword />
     }
   ]
 };

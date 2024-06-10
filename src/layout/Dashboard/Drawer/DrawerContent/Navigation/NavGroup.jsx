@@ -7,24 +7,32 @@ import Box from '@mui/material/Box';
 // project import
 import NavItem from './NavItem';
 import { useGetMenuMaster } from 'api/menu';
+import { useAuthContext } from 'hooks/useAuthContext';
 
 export default function NavGroup({ item }) {
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
+  const { state } = useAuthContext();
 
-  const navCollapse = item.children?.map((menuItem) => {
+  const navCollapse = item.children?.map((menuItem, index) => {
     switch (menuItem.type) {
       case 'collapse':
         return (
-          <Typography key={menuItem.id} variant="caption" color="error" sx={{ p: 2.5 }}>
+          <Typography key={index} variant="caption" color="error" sx={{ p: 2.5 }}>
             collapse - only available in paid version
           </Typography>
         );
       case 'item':
-        return <NavItem key={menuItem.id} item={menuItem} level={1} />;
+        return state?.user?.role == 'admin' ? (
+          <NavItem key={index} item={menuItem} level={1} />
+        ) : menuItem?.title == 'User Management' ? (
+          <></>
+        ) : (
+          <NavItem key={index} item={menuItem} level={1} />
+        );
       default:
         return (
-          <Typography key={menuItem.id} variant="h6" color="error" align="center">
+          <Typography key={index} variant="h6" color="error" align="center">
             Fix - Group Collapse or Items
           </Typography>
         );

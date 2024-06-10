@@ -81,7 +81,7 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         if (refreshError.response && refreshError.response.status === 403) {
           // Handle logout logic, e.g., redirect to login page
-          window.location.href = '/login';
+          // window.location.href = '/login';
         }
         console.error('Error during token refresh:', refreshError);
         return Promise.reject(refreshError);

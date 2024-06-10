@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 
 // material-ui
 import List from '@mui/material/List';
@@ -19,25 +18,22 @@ import { useNavigate } from 'react-router';
 // ==============================|| HEADER PROFILE - PROFILE TAB ||============================== //
 
 export default function ProfileTab() {
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  // const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const handleListItemClick = (index) => {
-    setSelectedIndex(index);
-  };
 
   const { handleLogout } = useLogout();
   const navigate = useNavigate();
 
   return (
     <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
-      <ListItemButton selected={selectedIndex === 0} onClick={(event) => handleListItemClick(event, 0, '/apps/profiles/user/personal')}>
+      <ListItemButton selected={true} onClick={() => navigate('/profile')}>
         <ListItemIcon>
           <EditOutlined />
         </ListItemIcon>
         <ListItemText primary="Edit Profile" />
       </ListItemButton>
       <ListItemButton
-        selected={selectedIndex === 2}
+        selected={false}
         onClick={async () => {
           handleLogout().then(() => {
             navigate('/login');

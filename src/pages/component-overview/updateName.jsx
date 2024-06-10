@@ -14,6 +14,7 @@ import Button from '@mui/material/Button';
 import { postData } from 'api/api';
 import { LOGIN } from 'contexts/actions';
 import { useAuthContext } from 'hooks/useAuthContext';
+import { enqueueSnackbar } from 'notistack';
 
 // First and Last Name Form
 export default function UpdateName({ user }) {
@@ -32,7 +33,7 @@ export default function UpdateName({ user }) {
         lastName: user.lastName || ''
       }}
       validationSchema={validationSchema}
-      onSubmit={async (values, { setErrors, setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         await postData('/users/updateName', values)
           .then((response) => {
             console.log(response);
@@ -44,10 +45,12 @@ export default function UpdateName({ user }) {
             localStorage.setItem('user', JSON.stringify(updatedUser));
             dispatch({ type: LOGIN, payload: { user: updatedUser } });
             navigate('/dashboard/default');
+            enqueueSnackbar('Name updated successfully', { variant: 'success' });
           })
           .catch((error) => {
             const message = error.message || 'Something went wrong';
-            setErrors({ submit: message });
+            // setErrors({ submit: message });
+            enqueueSnackbar(message, { variant: 'error' });
             setSubmitting(false);
           });
       }}

@@ -14,6 +14,7 @@ import Button from '@mui/material/Button';
 import { postData } from 'api/api';
 import { useAuthContext } from 'hooks/useAuthContext';
 import { LOGIN } from 'contexts/actions';
+import { enqueueSnackbar } from 'notistack';
 
 // Email Update Form
 export default function UpdateEmail({ user }) {
@@ -30,7 +31,7 @@ export default function UpdateEmail({ user }) {
         email: user.email || ''
       }}
       validationSchema={validationSchema}
-      onSubmit={async (values, { setErrors, setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         await postData('/users/updateEmail', values)
           .then((response) => {
             console.log(response);
@@ -40,11 +41,13 @@ export default function UpdateEmail({ user }) {
             };
             localStorage.setItem('user', JSON.stringify(updatedUser));
             dispatch({ type: LOGIN, payload: { user: updatedUser } });
+            enqueueSnackbar('Email updated', { variant: 'success' });
             navigate('/dashboard/default');
           })
           .catch((error) => {
             const message = error.message || 'Something went wrong';
-            setErrors({ submit: message });
+            // setErrors({ submit: message });
+            enqueueSnackbar(message, { variant: 'error' });
             setSubmitting(false);
           });
       }}

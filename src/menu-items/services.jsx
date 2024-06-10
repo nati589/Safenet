@@ -40,6 +40,13 @@ const services = {
       icon: icons.BgColorsOutlined
     },
     {
+      id: 'userlist',
+      title: 'User Management',
+      type: 'item',
+      url: '/userlist',
+      icon: icons.BgColorsOutlined
+    },
+    {
       id: 'profile',
       title: 'Profile',
       type: 'item',

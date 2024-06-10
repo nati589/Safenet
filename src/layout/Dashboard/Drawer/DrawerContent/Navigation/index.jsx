@@ -9,13 +9,13 @@ import menuItem from 'menu-items';
 // ==============================|| DRAWER CONTENT - NAVIGATION ||============================== //
 
 export default function Navigation() {
-  const navGroups = menuItem.items.map((item) => {
+  const navGroups = menuItem.items.map((item, index) => {
     switch (item.type) {
       case 'group':
-        return <NavGroup key={item.id} item={item} />;
+        return <NavGroup key={index} item={item} />;
       default:
         return (
-          <Typography key={item.id} variant="h6" color="error" align="center">
+          <Typography key={index} variant="h6" color="error" align="center">
             Fix - Navigation Group
           </Typography>
         );

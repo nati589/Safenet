@@ -20,6 +20,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton }
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { getData } from 'api/api';
+import { io } from 'socket.io-client';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -64,7 +65,7 @@ const headCells = [
     id: 'protein',
     align: 'right',
     disablePadding: false,
-    label: 'Flow Size'
+    label: 'Attack Type'
   }
 ];
 
@@ -116,48 +117,81 @@ function OrderStatus({ status }) {
 
 // ==============================|| ORDER TABLE ||============================== //
 
-export default function OrderTable() {
+export default function BlacklistTable() {
   const [open, setOpen] = useState(false);
   const [modalData, setModalData] = useState({});
+  const [socket, setSocket] = useState(null);
   // const [data, setData] = useState([]);
 
   function handleOpen(id) {
-    getOneFlow(id);
+    console.log(id);
+    setModalData(() => rows.find((row) => row.tracking_no === id));
+    // getOneFlow(id);
     setOpen((prev) => !prev);
   }
   const [rows, setRows] = useState([]);
   const getFlows = () => {
-    getData('/flows/adminFlows')
+    let x = [];
+    getData('/blacklist')
       .then((response) => {
         response.map((flow) => {
-          setRows((rows) => [...rows, createData(flow._id, flow.source_ip, flow.destination_ip, flow.protocol, flow.timestamp.length)]);
+          x = [...x, createData(flow._id, flow.source_ip, flow.destination_ip, flow.protocol, flow.attack_type)];
+          // setRows((rows) => [...rows, createData(flow._id, flow.source_ip, flow.destination_ip, flow.protocol, flow.attack_type)]);
         });
+        setRows(x);
       })
       .catch((error) => {
         console.log(error);
       });
   };
-  const getOneFlow = (id) => {
-    getData(`/flows/${id}`)
-      .then((response) => {
-        console.log(response);
-        setModalData(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  // const getOneFlow = (id) => {
+  //   getData(`/flows/${id}`)
+  //     .then((response) => {
+  //       console.log(response);
+  //       setModalData(response);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
 
   useEffect(() => {
     // setInterval(() => {
     getFlows();
-
-    const intervalId = setInterval(getFlows, 1000); // Fetch data every second
-
-    return () => clearInterval(intervalId); 
     // }, 5000);
     // getFlows();
   }, []);
+  useEffect(() => {
+    // Connect to the server
+    const newSocket = io('http://localhost:4000', {
+      withCredentials: true
+      // extraHeaders: {
+      //   "my-custom-header": "abcd"
+      // }
+    });
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (socket == null) return;
+
+    // Join the room
+    socket.emit('joinRoom', 1);
+
+    // Listen for 'flowData' event
+    socket.on('flowData', (flow) => {
+      // setFlows(flows => [...flows, flow]);
+      console.log(flow);
+    });
+
+    return () => {
+      socket.off('flowData');
+    };
+  }, [socket]);
 
   return (
     <Box>
@@ -201,7 +235,7 @@ export default function OrderTable() {
       </TableContainer>
       <BootstrapDialog onClose={() => handleOpen(null)} aria-labelledby="customized-dialog-title" open={open}>
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Flow Details
+          Blacklist Details
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -241,53 +275,10 @@ export default function OrderTable() {
           >
             <Typography variant="p">Destination Port: {modalData?.destination_port}</Typography>
             <Typography variant="p">Protocol: {modalData?.protocol}</Typography>
-            {/* <Typography variant="p">Attack Type: {modalData?.Attack_type}</Typography> */}
-            {/* <Typography variant="p">Mechanism: {modalData?.Mechanism}</Typography> */}
+            <Typography variant="p">Attack Type: {modalData?.attack_type}</Typography>
+            <Typography variant="p">Mechanism: {modalData?.mechanism}</Typography>
+            <Typography variant="p">Entry: {modalData?.entry}</Typography>
           </Box>
-          <Typography variant="h5" sx={{ mb: 2 }}>
-            Packet List
-          </Typography>
-          <Table aria-labelledby="tableTitle">
-            <TableHead>
-              <TableRow>
-                {['Timestamp', 'Packet Direction', 'Packet IHL', 'Segment', 'Flag'].map((headCell, index) => (
-                  <TableCell
-                    key={index}
-                    // align={headCell.align}
-                    padding={'normal'}
-                    sortDirection={false}
-                  >
-                    {headCell}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {modalData?.timestamp?.map((flag, index) => {
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-                  <TableRow hover role="checkbox" sx={{ '&:last-child td, &:last-child th': { border: 0 } }} tabIndex={-1} key={index}>
-                    <TableCell component="th" id={labelId} scope="row">
-                      {modalData.timestamp[index]}
-                    </TableCell>
-                    <TableCell component="th" id={labelId} scope="row">
-                      {modalData.packet_dir[index]}
-                    </TableCell>
-                    <TableCell component="th" id={labelId} scope="row">
-                      {modalData.packet_ihl[index]}
-                    </TableCell>
-                    <TableCell component="th" id={labelId} scope="row">
-                      {modalData.packet_seg[index]}
-                    </TableCell>
-                    <TableCell component="th" id={labelId} scope="row">
-                      {JSON.stringify(modalData.flags[0][index])}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={() => handleOpen(null)}>
